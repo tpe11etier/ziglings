@@ -21,14 +21,14 @@ const std = @import("std");
 
 const Elephant = struct {
     letter: u8,
-    tail: *Elephant = null, // Hmm... tail needs something...
+    tail: ?*Elephant = null, // Hmm... tail needs something...
     visited: bool = false,
 };
 
 pub fn main() void {
-    var elephantA = Elephant{ .letter = 'A' };
-    var elephantB = Elephant{ .letter = 'B' };
-    var elephantC = Elephant{ .letter = 'C' };
+    var elephantA = Elephant{ .letter = 'A', .tail = null };
+    var elephantB = Elephant{ .letter = 'B', .tail = null };
+    var elephantC = Elephant{ .letter = 'C', .tail = null };
 
     // Link the elephants so that each tail "points" to the next.
     elephantA.tail = &elephantB;
@@ -51,8 +51,11 @@ fn visitElephants(first_elephant: *Elephant) void {
         // We should stop once we encounter a tail that
         // does NOT point to another element. What can
         // we put here to make that happen?
-        if (e.tail == null) ???;
+        if (e.tail) |next| {
+            e = next;
+        } else {
+            break;
+        }
 
-        e = e.tail.?;
     }
 }
